@@ -10,8 +10,10 @@ const multer = require('multer')
 // Carrega variáveis de ambiente
 require('dotenv/config');
 
-// Importa rotas
+// Importa rotas do feed
 const feedRoutes = require('./routes/feed');
+// Importa rotas de autenticação
+const authRoutes = require('./routes/auth');
 
 // Cria app com express
 const app = express();
@@ -56,12 +58,16 @@ app.use((req,res,next)=>{
 
 // Usa rotas /feed 
 app.use('/feed', feedRoutes)
+// Usa rotas /feed 
+app.use('/auth', authRoutes)
 
+// Error handling
 app.use((error, req, res, next)=>{
     console.log(error)
     const status = error.statusCode || 500
     const message = error.message
-    res.status(status).json({message: message})
+    const data = error.data
+    res.status(status).json({message: message, data: data})
 })
 
 // Conecta ao banco de dados e inicia aplicação
