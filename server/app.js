@@ -27,6 +27,8 @@ const fileStorage = multer.diskStorage({
         cb(null, new Date().toISOString()+'-'+file.originalname)
     }
 })
+
+
 const fileFilter = (req,file, cb)=>{
     if(file.mimetype==='image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
         cb(null,true)
@@ -81,6 +83,13 @@ mongoose.connect(
 )
 .then(result =>{
     console.log("Connected to database.")
-    app.listen(8080)
+    const server = app.listen(8080)
+
+    // Realtime configuration - socket.io
+    const io = require('./socket').init(server)
+    io.on('connection', socket =>{
+        console.log('Client connected!')
+    })
+
 })
 .catch(err => console.log(err))
