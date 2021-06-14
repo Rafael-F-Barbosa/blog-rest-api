@@ -23,7 +23,8 @@ class Feed extends Component {
   };
 
   componentDidMount() {
-    fetch('http://localhost:8080/auth/status', {
+    fetch('http://localhost:8080/auth/status/', {
+      method: 'GET',
       headers: {
         Authorization: 'Bearer ' + this.props.token
       }
@@ -121,7 +122,16 @@ class Feed extends Component {
 
   statusUpdateHandler = event => {
     event.preventDefault();
-    fetch('URL')
+    const newStatus = this.state.status
+    const formData = new FormData()
+    formData.append('status', newStatus)
+    fetch('http://localhost:8080/auth/status/',{
+      method: 'PATCH',
+      body: formData,
+      headers: {
+        Authorization: 'Bearer ' + this.props.token
+      }
+    })
       .then(res => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error("Can't update status!");
@@ -182,13 +192,6 @@ class Feed extends Component {
         return res.json();
       })
       .then(resData => {
-        const post = {
-          _id: resData.post._id,
-          title: resData.post.title,
-          content: resData.post.content,
-          creator: resData.post.creator,
-          createdAt: resData.post.createdAt
-        };
         this.setState(prevState => {
           
           return {
