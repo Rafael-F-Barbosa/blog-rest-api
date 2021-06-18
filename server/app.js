@@ -5,11 +5,6 @@ const mongoose = require('mongoose')
 const path = require('path')
 const multer = require('multer')
 
-
-
-// Carrega variáveis de ambiente
-require('dotenv/config');
-
 // Importa rotas do feed
 const feedRoutes = require('./routes/feed');
 // Importa rotas de autenticação
@@ -27,8 +22,6 @@ const fileStorage = multer.diskStorage({
         cb(null, new Date().toISOString()+'-'+file.originalname)
     }
 })
-
-
 const fileFilter = (req,file, cb)=>{
     if(file.mimetype==='image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
         cb(null,true)
