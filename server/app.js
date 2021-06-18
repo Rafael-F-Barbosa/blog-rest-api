@@ -76,7 +76,7 @@ mongoose.connect(
 )
 .then(result =>{
     console.log("Connected to database.")
-    const server = app.listen(8080)
+    const server = app.listen(process.env.PORT || 8080)
 
     // Realtime configuration - socket.io
     const io = require('./socket').init(server)
