@@ -10,6 +10,8 @@ import Loader from '../../components/Loader/Loader';
 import ErrorHandler from '../../components/ErrorHandler/ErrorHandler';
 import './Feed.css';
 
+import API_URL from '../../util/util'
+
 class Feed extends Component {
   state = {
     isEditing: false,
@@ -23,7 +25,7 @@ class Feed extends Component {
   };
 
   componentDidMount() {
-    fetch('http://localhost:8080/auth/status/', {
+    fetch(API_URL +'/auth/status/', {
       method: 'GET',
       headers: {
         Authorization: 'Bearer ' + this.props.token
@@ -41,7 +43,7 @@ class Feed extends Component {
       .catch(this.catchError);
 
     this.loadPosts();
-    const socket = openSocket('http://localhost:8080')
+    const socket = openSocket(API_URL)
     socket.on('posts', data =>{
       if(data.action === 'create'){
         this.addPost(data.post)
@@ -94,7 +96,7 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8080/feed/posts?page=?'+ page , {
+    fetch(API_URL +'/feed/posts?page=?'+ page , {
       headers: {
         Authorization: 'Bearer '+this.props.token
       }
@@ -125,7 +127,7 @@ class Feed extends Component {
     const newStatus = this.state.status
     const formData = new FormData()
     formData.append('status', newStatus)
-    fetch('http://localhost:8080/auth/status/',{
+    fetch(API_URL +'/auth/status/',{
       method: 'PATCH',
       body: formData,
       headers: {
@@ -171,10 +173,10 @@ class Feed extends Component {
     formData.append('title', postData.title)
     formData.append('content', postData.content)
     formData.append('image', postData.image)
-    let url = 'http://localhost:8080/feed/post'
+    let url = API_URL + '/feed/post'
     let method = 'POST'
     if (this.state.editPost) {
-      url = 'http://localhost:8080/feed/post/'+this.state.editPost._id
+      url = API_URL +'/feed/post/'+ this.state.editPost._id
       method = 'PUT'
     }
 
@@ -182,7 +184,7 @@ class Feed extends Component {
       method: method,
       body: formData,
       headers: {
-        Authorization: 'Bearer '+this.props.token
+        Authorization: 'Bearer '+ this.props.token
       }
     })
       .then(res => {
@@ -218,7 +220,7 @@ class Feed extends Component {
 
   deletePostHandler = postId => {
     this.setState({ postsLoading: true });
-    fetch('http://localhost:8080/feed/post/'+postId, {
+    fetch(API_URL +'/feed/post/'+postId, {
       method: 'DELETE',
       headers: {
         Authorization: 'Bearer '+this.props.token
